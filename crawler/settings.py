@@ -95,3 +95,7 @@ DB_PORT = '5432'
 DB_NAME = 'nba'
 DB_USER = 'postgres'
 DB_PWD = '1234'
+
+import os 
+
+DATABASE_URL = os.environ.get('DATABASE_URL')

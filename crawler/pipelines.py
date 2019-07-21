@@ -11,21 +11,13 @@ INSERT_SQL = "INSERT INTO news_nba (title, date_time, author, content, image_sou
 has_crawled_article = dict()
 
 class CrawlerPipeline(object):
-    def __init__(self, db_host, db_port, db_name, db_user, db_pwd):
-        self.db_host = db_host
-        self.db_port = db_port
-        self.db_name = db_name
-        self.db_user = db_user
-        self.db_pwd = db_pwd
+    def __init__(self, db_url):
+        self.db_url = db_url
 
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            db_host = crawler.settings.get('DB_HOST'),
-            db_port = crawler.settings.get('DB_PORT'),
-            db_name = crawler.settings.get('DB_NAME'),
-            db_user = crawler.settings.get('DB_USER'),
-            db_pwd = crawler.settings.get('DB_PWD')
+            db_url = crawler.settings.get('DATABASE_URL')
         )
         
     def process_item(self, item, spider):
@@ -36,7 +28,7 @@ class CrawlerPipeline(object):
                 del has_crawled_article[item.get('article_url')] 
         else:
             try:
-                conn = psycopg2.connect(host=self.db_host, port=self.db_port, database=self.db_name, user=self.db_user, password=self.db_pwd)
+                conn = psycopg2.connect(self.db_url)
                 cur = conn.cursor()
                 cur.execute(INSERT_SQL, (item.get('title'), item.get('date_time'), item.get('author'), item.get('content'), item.get('image_source'), item.get('video_source')))
                 conn.commit()

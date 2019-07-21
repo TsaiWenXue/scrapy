@@ -10,7 +10,7 @@ date_time_xpath = '//*[@id="shareBar"]/div[2]/div/span/text()'
 author_xpath = '//*[@id="shareBar"]/div[2]/div/text()'
 image_source_xpath = '/html/head/meta[@property="og:image"]/@content'
 video_source_xpath = '//*[@id="story_body_content"]/span/div[@class="video-container"]/iframe/@src'
-content_xpath = '//*[@id="story_body_content"]/span/p/text()'
+content_xpath = '//*[@id="story_body_content"]/span/p/text() | //*[@id="story_body_content"]/span/p/a/strong/text()'
 
 class NbaSpider(scrapy.Spider):
     name = 'nba'

@@ -15,12 +15,7 @@ content_xpath = '//*[@id="story_body_content"]/span/p/text() | //*[@id="story_bo
 class NbaSpider(scrapy.Spider):
     name = 'nba'
     allowed_domains = ['nba.udn.com']
-    start_urls = ['https://nba.udn.com/nba/cate/6754/-1/newest/6',
-                'https://nba.udn.com/nba/cate/6754/-1/newest/5',
-                'https://nba.udn.com/nba/cate/6754/-1/newest/4',
-                'https://nba.udn.com/nba/cate/6754/-1/newest/3',
-                'https://nba.udn.com/nba/cate/6754/-1/newest/2',
-                'https://nba.udn.com/nba/cate/6754/-1/newest/1']
+    start_urls = ['https://nba.udn.com/nba/news/']
 
     def parse(self, response):
         targets = response.xpath(targets_xpath)

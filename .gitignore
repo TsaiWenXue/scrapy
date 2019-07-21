@@ -3,3 +3,4 @@
 venv/
 __pycache__/
 crawler/runner.py
+dbs/default.db

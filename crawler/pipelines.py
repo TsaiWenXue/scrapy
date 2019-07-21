@@ -25,6 +25,7 @@ class CrawlerPipeline(object):
             self.cur.execute(INSERT_SQL, (item.get('title'), item.get('date_time'), item.get('author'), item.get('content'), item.get('image_source'), item.get('video_source'), item.get('article_url')))
             self.conn.commit()
         except Exception as e:
+            self.conn.rollback()
             logging.error(str(e))
         return item
 

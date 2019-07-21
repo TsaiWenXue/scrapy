@@ -7,12 +7,12 @@
 import psycopg2
 import logging
 
-INSERT_SQL = "INSERT INTO news_nba (title, date_time, author, content, image_source, video_source) VALUES (%s, %s, %s, %s, %s, %s)"
-has_crawled_article = dict()
+INSERT_SQL = "INSERT INTO news_nba (title, date_time, author, content, image_source, video_source, article_url) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 
 class CrawlerPipeline(object):
     def __init__(self, db_url):
-        self.db_url = db_url
+        self.conn = psycopg2.connect(db_url)
+        self.cur = self.conn.cursor()
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -21,21 +21,13 @@ class CrawlerPipeline(object):
         )
         
     def process_item(self, item, spider):
-        if item.get('article_url') in has_crawled_article:
-            logging.INFO('{} has crawled'.format(item.get('article_url')))
-            has_crawled_article[item.get('article_url')] += 1
-            if has_crawled_article[item.get('article_url')] >= 20:
-                del has_crawled_article[item.get('article_url')] 
-        else:
-            try:
-                conn = psycopg2.connect(self.db_url)
-                cur = conn.cursor()
-                cur.execute(INSERT_SQL, (item.get('title'), item.get('date_time'), item.get('author'), item.get('content'), item.get('image_source'), item.get('video_source')))
-                conn.commit()
-                cur.close()
-                conn.close()
-                has_crawled_article[item.get('article_url')] = 1
-            except Exception as e:
-                logging.error(str(e))
+        try:
+            self.cur.execute(INSERT_SQL, (item.get('title'), item.get('date_time'), item.get('author'), item.get('content'), item.get('image_source'), item.get('video_source'), item.get('article_url')))
+            self.conn.commit()
+        except Exception as e:
+            logging.error(str(e))
         return item
 
+    def close_spider(self, spider):
+        self.cur.close()
+        self.conn.close()

@@ -1,1 +1,1 @@
-web: scrapyd-heroku
+web: scrapyd
